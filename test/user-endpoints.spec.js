@@ -172,7 +172,7 @@ describe.only('User Endpoints', function () {
           name: 'test name',
         }
         const expectedList = {
-          name: 'French',
+          name: 'Spanish',
           total_score: 0,
           words: [
             { original: 'andar', translation: 'to walk' },
