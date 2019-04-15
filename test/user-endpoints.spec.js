@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs')
 const app = require('../src/app')
 const helpers = require('./test-helpers')
 
-describe('User Endpoints', function () {
+describe.only('User Endpoints', function () {
   let db
 
   const testUsers = helpers.makeUsersArray()
@@ -165,7 +165,7 @@ describe('User Endpoints', function () {
           )
       })
 
-      it(`inserts 1 language with words for the new user`, () => {
+      it.only(`inserts 1 language with words for the new user`, () => {
         const newUser = {
           username: 'test username',
           password: '11AAaa!!',
@@ -175,14 +175,16 @@ describe('User Endpoints', function () {
           name: 'French',
           total_score: 0,
           words: [
-            { original: 'entraine toi', translation: 'practice' },
-            { original: 'bonjour', translation: 'hello' },
-            { original: 'maison', translation: 'house' },
-            { original: 'développeur', translation: 'developer' },
-            { original: 'traduire', translation: 'translate' },
-            { original: 'incroyable', translation: 'amazing' },
-            { original: 'chien', translation: 'dog' },
-            { original: 'chat', translation: 'cat' },
+            { original: 'andar', translation: 'to walk' },
+            { original: 'trabajar', translation: 'to work' },
+            { original: 'leer', translation: 'to read' },
+            { original: 'limpiar', translation: 'to clean' },
+            { original: 'beber', translation: 'to drink' },
+            { original: 'mover', translation: 'to move' },
+            { original: 'encontrar', translation: 'to find' },
+            { original: 'entender', translation: 'to understand' },
+            { original: 'dar', translation: 'to give' },
+            { original: 'empezar', translation: 'to begin' }
           ]
         }
         return supertest(app)
