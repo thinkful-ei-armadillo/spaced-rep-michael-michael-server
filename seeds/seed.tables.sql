@@ -29,7 +29,7 @@ VALUES
   (6, 1, 'mover', 'to move', 7),
   (7, 1, 'encontrar', 'to find', 8),
   (8, 1, 'entender', 'to understand', 9),
-  (9, 1, 'dar', 'to give', 10)
+  (9, 1, 'dar', 'to give', 10),
   (10, 1, 'empezar', 'to begin', null);
 
 UPDATE "language" SET head = 1 WHERE id = 1;
