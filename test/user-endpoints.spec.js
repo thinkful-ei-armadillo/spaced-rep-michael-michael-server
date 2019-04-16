@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const app = require('../src/app');
 const helpers = require('./test-helpers');
 const supertest = require('supertest');
+const { expect } = require('chai');
 
 describe('User Endpoints', function () {
   let db;
@@ -26,9 +27,9 @@ describe('User Endpoints', function () {
    * @description Register a user and populate their fields
    **/
   describe('POST /api/user', () => {
-    beforeEach('insert users', () => helpers.seedUsers(db, testUsers))
+    beforeEach('insert users', () => helpers.seedUsers(db, testUsers));
 
-    const requiredFields = ['username', 'password', 'name']
+    const requiredFields = ['username', 'password', 'name'];
 
     requiredFields.forEach(field => {
       const registerAttemptBody = {
@@ -58,7 +59,7 @@ describe('User Endpoints', function () {
       return supertest(app)
         .post('/api/user')
         .send(userShortPassword)
-        .expect(400, { error: 'Password be longer than 8 characters' })
+        .expect(400, { error: 'Password be longer than 8 characters' });
     });
 
     it('responds 400 \'Password be less than 72 characters\' when long password', () => {
@@ -70,7 +71,7 @@ describe('User Endpoints', function () {
       return supertest(app)
         .post('/api/user')
         .send(userLongPassword)
-        .expect(400, { error: 'Password be less than 72 characters' })
+        .expect(400, { error: 'Password be less than 72 characters' });
     });
 
     it('responds 400 error when password starts with spaces', () => {
@@ -82,7 +83,7 @@ describe('User Endpoints', function () {
       return supertest(app)
         .post('/api/user')
         .send(userPasswordStartsSpaces)
-        .expect(400, { error: 'Password must not start or end with empty spaces' })
+        .expect(400, { error: 'Password must not start or end with empty spaces' });
     });
 
     it('responds 400 error when password ends with spaces', () => {
@@ -94,7 +95,7 @@ describe('User Endpoints', function () {
       return supertest(app)
         .post('/api/user')
         .send(userPasswordEndsSpaces)
-        .expect(400, { error: 'Password must not start or end with empty spaces' })
+        .expect(400, { error: 'Password must not start or end with empty spaces' });
     });
 
     it('responds 400 error when password isn\'t complex enough', () => {
@@ -106,7 +107,7 @@ describe('User Endpoints', function () {
       return supertest(app)
         .post('/api/user')
         .send(userPasswordNotComplex)
-        .expect(400, { error: 'Password must contain one upper case, lower case, number and special character' })
+        .expect(400, { error: 'Password must contain one upper case, lower case, number and special character' });
     });
 
     it('responds 400 \'User name already taken\' when username isn\'t unique', () => {
@@ -118,7 +119,7 @@ describe('User Endpoints', function () {
       return supertest(app)
         .post('/api/user')
         .send(duplicateUser)
-        .expect(400, { error: 'Username already taken' })
+        .expect(400, { error: 'Username already taken' });
     });
 
     describe('Given a valid user', () => {
@@ -220,15 +221,15 @@ describe('User Endpoints', function () {
             const dbWords = dbLists[0].words;
             expect(dbWords).to.have.length(
               expectedList.words.length
-            )
+            );
 
             expectedList.words.forEach((expectedWord, w) => {
               expect(dbWords[w].original).to.eql(
                 expectedWord.original
-              )
+              );
               expect(dbWords[w].translation).to.eql(
                 expectedWord.translation
-              )
+              );
               expect(dbWords[w].memory_value).to.eql(1);
             });
           });

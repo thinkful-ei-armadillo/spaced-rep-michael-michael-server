@@ -31,14 +31,16 @@ const LanguageService = {
       .where({ language_id });
   },
 
-  getNextWord(db, language_id) {
+  getNextWord(db) {
     return db
       .from('word')
       .select(
         'original',
         'correct_count',
         'incorrect_count'
-      );
+      )
+      .first();
+      
       
   },
 
