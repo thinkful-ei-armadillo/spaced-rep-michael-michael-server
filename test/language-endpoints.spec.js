@@ -1,3 +1,5 @@
+'use strict';
+
 const app = require('../src/app')
 const helpers = require('./test-helpers')
 
@@ -43,7 +45,7 @@ describe('Language Endpoints', function () {
             db,
             testUsers,
             testLanguages,
-            testWords,
+            testWords
           )
         })
 
@@ -75,7 +77,7 @@ describe('Language Endpoints', function () {
         db,
         testUsers,
         testLanguages,
-        testWords,
+        testWords
       )
     })
 
@@ -119,11 +121,11 @@ describe('Language Endpoints', function () {
         db,
         testUsers,
         testLanguages,
-        testWords,
+        testWords
       )
     })
 
-    it.skip(`responds with 200 and user's languages`, () => {
+    it(`responds with 200 and user's languages`, () => {
       return supertest(app)
         .get(`/api/language/head`)
         .set('Authorization', helpers.makeAuthHeader(testUser))
@@ -151,7 +153,7 @@ describe('Language Endpoints', function () {
         db,
         testUsers,
         testLanguages,
-        testWords,
+        testWords
       )
     })
 
