@@ -38,8 +38,8 @@ const LanguageService = {
         'original',
         'correct_count',
         'incorrect_count'
-      )
-      .first();
+      );
+      
       
       
   },
