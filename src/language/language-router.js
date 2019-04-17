@@ -58,8 +58,27 @@ languageRouter
 
 languageRouter
   .post('/guess', async (req, res, next) => {
-    // implement me
-    res.send('implement me!')
+    const { word, guess } = req.body;
+
+    if(guess === "correct"){
+    LanguageService.incCorrectCount(
+      req.app.get('db'),
+      word
+    )
+    res.json({
+      correct_count: word.correct_count
+    })
+    }
+    if(guess === "incorrect"){
+      LanguageService.incIncorrectCount(
+        req.app.get('db'),
+        word
+      )
+      res.json({
+        incorrect_count: word.incorrect_count
+      })
+      }
+    next()
   })
 
 module.exports = languageRouter
