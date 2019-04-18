@@ -61,7 +61,8 @@ languageRouter
 languageRouter
   .post('/guess', jsonBodyParser, async (req, res, next) => {
     const { guess } = req.body;
-    console.log(guess);
+    const userGuess = guess;
+    console.log('>>>USER GUESS', userGuess)
     const head = await LanguageService.getLanguageHead(
       req.app.get('db'),
       req.user.id,
@@ -77,36 +78,40 @@ languageRouter
     words.map(word => {
       newWordData.insertLast(word)
     });
-    // res.json(newWordData)
 
     const wordsHead = newWordData.head.value;
+    const wordsHeadNext = newWordData.head.next.value;
 
-    if(guess === wordsHead.translation){
+    if(userGuess === wordsHead.translation){
       wordsHead.correct_count += 1;
       wordsHead.memory_value *= 2;
       head.total_score += 1;
-      res.send({
-        nextWord: wordsHead,
-        wordCorrectCount: wordsHead.correct_count,
-        wordIncorrectCount: wordsHead.incorrect_count,
-        totalScore: head.total_score,
-        answer: wordsHead.translation,
-        isCorrect: true
-      });
+      res
+        .status(201)
+        .json({
+          nextWord: wordsHeadNext,
+          wordCorrectCount: wordsHeadNext.correct_count,
+          wordIncorrectCount: wordsHeadNext.incorrect_count,
+          totalScore: head.total_score,
+          answer: wordsHead.translation,
+          isCorrect: true
+        });
       newWordData.remove(wordsHead);
       newWordData.insertAt(wordsHead, wordsHead.memory_value + 1);
     }
-    else if(guess !== wordsHead.translation){
+    else if(userGuess !== wordsHead.translation){
       wordsHead.incorrect_count += 1;
       wordsHead.memory_value = 1;
-      res.send({
-        nextWord: wordsHead,
-        wordCorrectCount: wordsHead.correct_count,
-        wordIncorrectCount: wordsHead.incorrect_count,
-        totalScore: head.total_score,
-        answer: wordsHead.translation,
-        isCorrect: false
-      });
+      res
+        .status(201)
+        .json({
+          nextWord: wordsHeadNext,
+          wordCorrectCount: wordsHeadNext.correct_count,
+          wordIncorrectCount: wordsHeadNext.incorrect_count,
+          totalScore: head.total_score,
+          answer: wordsHead.translation,
+          isCorrect: false
+        });
       newWordData.remove(wordsHead);
       newWordData.insertAt(wordsHead, 2);
     }
