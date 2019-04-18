@@ -1,6 +1,7 @@
 const express = require('express')
 const LanguageService = require('./language-service')
 const { requireAuth } = require('../middleware/jwt-auth')
+const LinkedList = require('../LinkedList');
 
 const languageRouter = express.Router()
 
@@ -58,7 +59,24 @@ languageRouter
 
 languageRouter
   .post('/guess', async (req, res, next) => {
-    const { word, guess } = req.body;
+    const { guess } = req.body;
+
+    const head = LanguageService.getLanguageHead(
+      req.app.get('db'),
+      req.user.id,
+    )
+    
+    const words = await LanguageService.getLanguageWords(
+      req.app.get('db'),
+      req.language.id,
+    )
+    
+    const newWordData = new LinkedList();
+
+    newWordData.insertFirst()
+
+    
+    
 
     if(guess === "correct"){
     LanguageService.incCorrectCount(
