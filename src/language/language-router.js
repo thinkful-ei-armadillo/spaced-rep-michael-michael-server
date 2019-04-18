@@ -86,6 +86,11 @@ languageRouter
       wordsHead.correct_count += 1;
       wordsHead.memory_value *= 2;
       head.total_score += 1;
+      const newScore = await LanguageService.updateTotalScore(
+        req.app.get('db'),
+        req.user.id,
+        head.total_score
+      )
       res
         .status(201)
         .json({

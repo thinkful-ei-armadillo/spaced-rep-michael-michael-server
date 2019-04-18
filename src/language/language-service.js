@@ -39,7 +39,7 @@ const LanguageService = {
         'correct_count',
         'incorrect_count'
       )
-      .where({ language_id })
+      .where({ language_id });
   },
 
   getNextWord(db) {
@@ -69,7 +69,14 @@ const LanguageService = {
     return db
       .from('word')
       .update(wordObject)
-      .where('id', id)
+      .where('id', id);
+  },
+
+  updateTotalScore(db, user_id, score){
+    return db ('language')
+      .where('user_id', user_id)
+      
+      .update('total_score', score);
   }
 };
 
