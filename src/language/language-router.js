@@ -1,9 +1,10 @@
-const express = require('express')
-const LanguageService = require('./language-service')
-const { requireAuth } = require('../middleware/jwt-auth')
+const express = require('express');
+const LanguageService = require('./language-service');
+const { requireAuth } = require('../middleware/jwt-auth');
 const LinkedList = require('../LinkedList');
 
-const languageRouter = express.Router()
+const languageRouter = express.Router();
+const jsonBodyParser = express.json();
 
 languageRouter
   .use(requireAuth)
@@ -58,44 +59,87 @@ languageRouter
   })
 
 languageRouter
-  .post('/guess', async (req, res, next) => {
-    const { guess } = req.body;
-
-    const head = LanguageService.getLanguageHead(
+  .post('/guess', jsonBodyParser, async (req, res, next) => {
+    const head = await LanguageService.getLanguageHead(
       req.app.get('db'),
       req.user.id,
     )
-    
+
     const words = await LanguageService.getLanguageWords(
       req.app.get('db'),
       req.language.id,
     )
-    
+
     const newWordData = new LinkedList();
-
-    newWordData.insertFirst()
-
     
-    
+    words.map(word => {
+      newWordData.insertLast(word)
+    });
+    // res.json(newWordData)
 
-    if(guess === "correct"){
-    LanguageService.incCorrectCount(
-      req.app.get('db'),
-      word
-    )
-    res.json({
-      correct_count: word.correct_count
-    })
+    const wordsHead = newWordData.head.value;
+
+    if(req.body.guess === wordsHead.translation){
+      wordsHead.correct_count += 1;
+      wordsHead.memory_value *= 2;
+      head.total_score += 1;
+      res.send({
+        nextWord: wordsHead,
+        wordCorrectCount: wordsHead.correct_count,
+        wordIncorrectCount: wordsHead.incorrect_count,
+        totalScore: head.total_score,
+        answer: wordsHead.translation,
+        isCorrect: true
+      });
+      newWordData.remove(wordsHead);
+      newWordData.insertAt(wordsHead, wordsHead.memory_value + 1);
     }
-    if(guess === "incorrect"){
-      LanguageService.incIncorrectCount(
-        req.app.get('db'),
-        word
-      )
-      res.json({
-        incorrect_count: word.incorrect_count
-      })
+    else if(req.body.guess !== wordsHead.translation){
+      wordsHead.incorrect_count += 1;
+      wordsHead.memory_value = 1;
+      res.send({
+        nextWord: wordsHead,
+        wordCorrectCount: wordsHead.correct_count,
+        wordIncorrectCount: wordsHead.incorrect_count,
+        totalScore: head.total_score,
+        answer: wordsHead.translation,
+        isCorrect: false
+      });
+      newWordData.remove(wordsHead);
+      newWordData.insertAt(wordsHead, 2);
+    }
+
+    let node = newWordData.head;
+    let newDB = [];
+    while(node){
+      newDB.push(node.value);
+      node = node.next;
+    }
+   
+    for(let i = 0; i < newDB.length; i++){
+      let nextIdx = newDB[i].next;
+      if(nextIdx !== null){
+        nextIdx = newDB[i + 1].id;
+        newDB[i].next = nextIdx;
       }
+      else{
+        nextIdx = null;
+      }
+    }
+
+    for(let i = 0; i < newDB.length; i++){
+      const wordObject = {
+        memory_value: newDB[i].memory_value,
+        correct_count: newDB[i].correct_count,
+        incorrect_count: newDB[i].incorrect_count,
+        next: newDB[i].next
+      }
+      await LanguageService.postNewWords(
+        req.app.get('db'),
+        newDB[i].id,
+        wordObject
+      )
+    }
     next()
   })
 

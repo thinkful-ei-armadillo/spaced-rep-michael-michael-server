@@ -1,7 +1,5 @@
 'use strict';
 
-const wordData = require('./arraytolist');
-
 const LanguageService = {
   getUsersLanguage(db, user_id) {
     return db
@@ -21,16 +19,14 @@ const LanguageService = {
     return db
       .from('language')
       .select(
-        
-        
-        'language.head'
-        
+        'language.head',
+        'language.total_score'
       )
       .where('language.user_id', user_id)
       .first();
   },
 
-  getLanguageWords(db, language_id) {
+  getLanguageWords(db) {
     return db
       .from('word')
       .select(
@@ -42,8 +38,7 @@ const LanguageService = {
         'memory_value',
         'correct_count',
         'incorrect_count'
-      )
-      .where({ language_id });
+      );
   },
 
   getNextWord(db) {
@@ -56,7 +51,6 @@ const LanguageService = {
         'correct_count',
         'incorrect_count'
       );
-    // .where(wordData.head.value, 'word.id');
   },
 
   getTotalScore(db, user_id) {
@@ -70,21 +64,11 @@ const LanguageService = {
       .where('language.user_id', user_id );
   },
 
-  incCorrectCount(db, word_id){
+  postNewWords(db, id, wordObject){
     return db
       .from('word')
-      .select('*')
-      .where('id', language.head)
-      }
-  },
-
-  incIncorrectCount(db, word_id){
-    return db
-      .from('word')
-      .where({word_id})
-      .update({
-        incorrect_count: incorrect_count + 1
-      })
+      .update(wordObject)
+      .where('id', id)
   }
 };
 
