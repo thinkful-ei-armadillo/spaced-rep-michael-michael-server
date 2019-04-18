@@ -26,7 +26,7 @@ const LanguageService = {
       .first();
   },
 
-  getLanguageWords(db) {
+  getLanguageWords(db, language_id) {
     return db
       .from('word')
       .select(
@@ -38,7 +38,8 @@ const LanguageService = {
         'memory_value',
         'correct_count',
         'incorrect_count'
-      );
+      )
+      .where({ language_id })
   },
 
   getNextWord(db) {

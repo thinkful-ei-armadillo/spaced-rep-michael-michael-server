@@ -60,6 +60,8 @@ languageRouter
 
 languageRouter
   .post('/guess', jsonBodyParser, async (req, res, next) => {
+    const { guess } = req.body;
+    console.log(guess);
     const head = await LanguageService.getLanguageHead(
       req.app.get('db'),
       req.user.id,
@@ -79,7 +81,7 @@ languageRouter
 
     const wordsHead = newWordData.head.value;
 
-    if(req.body.guess === wordsHead.translation){
+    if(guess === wordsHead.translation){
       wordsHead.correct_count += 1;
       wordsHead.memory_value *= 2;
       head.total_score += 1;
@@ -94,7 +96,7 @@ languageRouter
       newWordData.remove(wordsHead);
       newWordData.insertAt(wordsHead, wordsHead.memory_value + 1);
     }
-    else if(req.body.guess !== wordsHead.translation){
+    else if(guess !== wordsHead.translation){
       wordsHead.incorrect_count += 1;
       wordsHead.memory_value = 1;
       res.send({
