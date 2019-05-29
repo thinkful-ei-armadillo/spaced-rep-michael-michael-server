@@ -82,7 +82,7 @@ languageRouter
     const wordsHead = newWordData.head.value;
     const wordsHeadNext = newWordData.head.next.value;
 
-    if(userGuess === wordsHead.translation){
+    if(userGuess == wordsHead.translation){
       wordsHead.correct_count += 1;
       wordsHead.memory_value *= 2;
       head.total_score += 1;
@@ -104,7 +104,7 @@ languageRouter
       newWordData.remove(wordsHead);
       newWordData.insertAt(wordsHead, wordsHead.memory_value + 1);
     }
-    else if(userGuess !== wordsHead.translation){
+    else if(userGuess != wordsHead.translation){
       wordsHead.incorrect_count += 1;
       wordsHead.memory_value = 1;
       res
